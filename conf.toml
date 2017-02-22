@@ -1,0 +1,9 @@
+[service]
+port = ":8080"
+
+[db]
+mysql = "root:1234@/encurtar_url?charset=utf8"
+redis = ""
+
+[base]
+alfabeto="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

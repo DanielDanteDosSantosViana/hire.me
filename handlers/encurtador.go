@@ -1,55 +1,65 @@
 package handlers
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
-	"github.com/DanielDanteDosSantosViana/hire.me/db"
-	"github.com/DanielDanteDosSantosViana/hire.me/model"
-	"github.com/DanielDanteDosSantosViana/hire.me/util"
 
+	"github.com/DanielDanteDosSantosViana/hire.me/models"
+	"github.com/DanielDanteDosSantosViana/hire.me/util"
+	"github.com/gorilla/mux"
 )
 
 type Encurtador struct {
-	session *mgo.Session
+	encurtador *models.Encurtador
 }
 
-func NewEncurtador() *Encurtador {
-	return &Encurtador{db.NewSession()}
+func NewEncurtador(encurtador *models.Encurtador) *Encurtador {
+	return &Encurtador{encurtador}
 }
 
 func (e *Encurtador) EncurtarURL(w http.ResponseWriter, r *http.Request) {
-	
-	url := r.URL.Query().Get("url")
-    aliasCustomizado := r.URL.Query().Get("CUSTOM_ALIAS")
 
-   	if url == "" {
-		log.Println("URL não informada")
-		http.Error(w, "URL não informada ", http.StatusInternalServerError)
+	url := r.URL.Query().Get("url")
+	aliasCustomizado := r.URL.Query().Get("CUSTOM_ALIAS")
+
+	if url == "" {
+		errorJ, _ := json.Marshal(models.NewErrorUrlNaoInformada())
+		util.ResponseInternalError(w, errorJ)
 		return
 	}
 
-    recuperador := models.NewRecuperador()
-    if aliasCustomizado != "" {
-		urlRetorno := recuperador.buscarUrlPorAlias(aliasCustomizado)
-		if urlRetorno!=nil{
-			log.Println("Alias informado já existe")
-			http.Error(w, "URL não informada ", http.StatusInternalServerError)
+	if aliasCustomizado != "" {
+		urlRetorno, err := e.encurtador.EncontrarAlias(aliasCustomizado)
+		if err != nil {
+			errorJ, _ := json.Marshal(models.NewErrorInterno())
+			util.ResponseInternalError(w, errorJ)
 			return
-		}	
+		}
+		if urlRetorno.Alias == "" {
+			errorJ, _ := json.Marshal(models.NewErrorAliasExiste())
+			util.ResponseInternalError(w, errorJ)
+			return
+		}
+
 	}
 
-	err, alias := util.Encurtar(url)
+	e.encurtador.Encurtar(url)
+}
+
+/*
+	urlRetorno, err := e.encurtador.Encurtar(url)
 	if err != nil {
 		log.Println("Error ao encurtar a URL")
 		http.Error(w, "Error ao encurtar a URL", http.StatusInternalServerError)
 		return
 	}
-	encurtador := models.NewEncurtardor(alias,url);
-	err, encurtador := encurtador.Criar()
-	if err != nil {
-		log.Println("Error ao salvar a URL")
-		http.Error(w, "Error ao encurtar a URL", http.StatusInternalServerError)
-		return
-	}	
-	//recuperador.buscarPorAlias(customizado)
+	log.Print(urlRetorno)
 
+*/
+
+func (e *Encurtador) BuscarURL(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	log.Println(params)
 }

@@ -1,13 +1,15 @@
 package db
 
 import (
-	"gopkg.in/mgo.v2"
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func NewSession() *mgo.Session {
-	s, err := mgo.Dial("mongodb://localhost")
+func NewSessionMysql() (*sql.DB, error) {
+	db, err := sql.Open("mysql", "root:1234@/encurtar_url?charset=utf8")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return s
+	return db, nil
 }
