@@ -1,4 +1,4 @@
-package route
+package router
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ func IniciarRotas() {
 	encurtador := models.NewEncurtador()
 	encurtadorHandler := handlers.NewEncurtador(encurtador)
 	router := mux.NewRouter()
-	router.HandleFunc("/url", encurtadorHandler.EncurtarURL).Methods("PUT")
-	router.HandleFunc("/url/{id}", encurtadorHandler.BuscarURL).Methods("GET")
+	router.HandleFunc("/criar", encurtadorHandler.EncurtarURL).Methods("PUT")
+	router.HandleFunc("/url/{alias}", encurtadorHandler.BuscarURL).Methods("GET")
 	http.Handle("/", router)
 }

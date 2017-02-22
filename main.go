@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/DanielDanteDosSantosViana/hire.me/config"
-	"github.com/DanielDanteDosSantosViana/hire.me/route"
+	"github.com/DanielDanteDosSantosViana/hire.me/router"
 )
 
 func main() {
@@ -19,7 +19,6 @@ func main() {
 	}
 
 	config.Load(*configFile)
-	log.Println(config.Conf)
 	router.IniciarRotas()
 	log.Println("Iniciou o serviço")
 	http.ListenAndServe(config.Conf.Service.Port, nil)

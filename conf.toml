@@ -1,9 +1,10 @@
 [service]
 port = ":8080"
+host = "http://localhost:8080/url/"
 
 [db]
-mysql = "root:1234@/encurtar_url?charset=utf8"
-redis = ""
+mysqlread =  "root:1234@/encurtar_url?charset=utf8"
+mysqlwrite = "root:1234@/encurtar_url?charset=utf8"
 
 [base]
 alfabeto="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

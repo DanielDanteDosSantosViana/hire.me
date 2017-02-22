@@ -1,5 +1,7 @@
 package models
 
+import "github.com/DanielDanteDosSantosViana/hire.me/config"
+
 type UrlEncurtada struct {
 	Alias       string      `json:"alias"`
 	URL         string      `json:"url"`
@@ -7,7 +9,11 @@ type UrlEncurtada struct {
 }
 
 type Estatistica struct {
-	TotalCaracteresUrl       string `json:"caracteresUrl"`
-	TotalCaracteresEncurtada string `json:"caracteresUrlEncurtada"`
 	TempoOperacao            string `json:"tempoOperacao"`
+}
+
+func NewUrlEncurtada(alias string, url string, tempoOperacao string)(UrlEncurtada){
+	estatistica := Estatistica{tempoOperacao}
+	alias = config.Conf.Service.Host+alias
+	return UrlEncurtada{alias,url,estatistica}
 }

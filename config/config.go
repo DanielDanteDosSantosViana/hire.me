@@ -11,11 +11,12 @@ import (
 
 type service struct {
 	Port string `toml:"port"`
+	Host string `toml:"host"`
 }
 
 type db struct {
-	Mysql string `toml:"mysql"`
-	Redis string `toml:"redis"`
+	MysqlWrite string `toml:"mysqlwrite"`
+	MysqlRead string `toml:"mysqlread"`
 }
 type base struct {
 	Alfabeto string `toml:"alfabeto"`
@@ -23,7 +24,7 @@ type base struct {
 type config struct {
 	Service service `toml:"service"`
 	Db      db      `toml:"db"`
-	Base    base    `toml:"alfabeto"`
+	Base    base    `toml:"base"`
 }
 
 var Conf config
