@@ -1,6 +1,6 @@
 [service]
-port = ":8080"
-host = "http://localhost:8080/url/"
+port = ":8081"
+host = "http://localhost:8081/url/"
 
 [db]
 mysqlread =  "root:1234@/encurtar_url?charset=utf8"

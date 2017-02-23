@@ -2,10 +2,10 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"strconv"
 	"time"
-	"errors"
 
 	"github.com/DanielDanteDosSantosViana/hire.me/db"
 	"github.com/DanielDanteDosSantosViana/hire.me/util"
@@ -36,31 +36,31 @@ func NewEncurtador() *Encurtador {
 	if err != nil {
 		log.Panicf("Ocorreu um erro ao tentar verificar conexão dbRead . %v", err)
 	}
-	return &Encurtador{sessionW,sessionR}
+	return &Encurtador{sessionW, sessionR}
 }
 
 func (e *Encurtador) Encurtar(url string, aliasCustomizavel string) (UrlEncurtada, error) {
 	inicio := time.Now()
-	if aliasCustomizavel!=""{
-			tempoOperacao, err := e.criarUrlEncurtada(aliasCustomizavel,url,inicio)	
-			if err != nil {
-				return UrlEncurtada{}, err
-			}
-			return NewUrlEncurtada(aliasCustomizavel,url,tempoOperacao), nil
+	if aliasCustomizavel != "" {
+		tempoOperacao, err := e.criarUrlEncurtada(aliasCustomizavel, url, inicio)
+		if err != nil {
+			return UrlEncurtada{}, err
+		}
+		return NewUrlEncurtada(aliasCustomizavel, url, tempoOperacao, 0), nil
 	}
 
-	sequence,err := e.nextSequence();
+	sequence, err := e.nextSequence()
 	if err != nil {
 		return UrlEncurtada{}, err
 	}
 
 	alias := util.InteiroParaString(sequence)
-	tempoOperacao, err := e.criarUrlEncurtada(alias,url,inicio)	
+	tempoOperacao, err := e.criarUrlEncurtada(alias, url, inicio)
 	if err != nil {
 		return UrlEncurtada{}, err
 	}
 
-	return NewUrlEncurtada(alias,url,tempoOperacao), nil
+	return NewUrlEncurtada(alias, url, tempoOperacao, 0), nil
 }
 func (e *Encurtador) ExisteAlias(alias string) (bool, error) {
 	var urlLonga string
@@ -87,7 +87,7 @@ func (e *Encurtador) ExisteAlias(alias string) (bool, error) {
 		return false, errors.New("dbRead error na interacao da linha")
 	}
 
-	if urlLonga!=""{
+	if urlLonga != "" {
 		return true, nil
 	}
 	return false, nil
@@ -97,9 +97,10 @@ func (e *Encurtador) BuscarPorAlias(alias string) (UrlEncurtada, *ErrorReturn) {
 	var urlLonga string
 	var aliasRetorno string
 	var tempoOperacao string
+	var acessos int
 
 	var rows *sql.Rows
-	rows, err := e.readDB.Query(`SELECT url_longa,alias,tempo_operacao FROM url_encurtada WHERE alias=?`, alias)
+	rows, err := e.readDB.Query(`SELECT url_longa,alias,tempo_operacao,acessos FROM url_encurtada WHERE alias=?`, alias)
 	if err != nil {
 		log.Printf("dbRead error ao executar a query. %v", err)
 		return UrlEncurtada{}, NewErrorInterno()
@@ -108,7 +109,7 @@ func (e *Encurtador) BuscarPorAlias(alias string) (UrlEncurtada, *ErrorReturn) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err = rows.Scan(&urlLonga,&aliasRetorno,&tempoOperacao)
+		err = rows.Scan(&urlLonga, &aliasRetorno, &tempoOperacao, &acessos)
 		if err != nil {
 			log.Printf("dbRead error ao ler as linhas retornadas da consulta. %v", err)
 			return UrlEncurtada{}, NewErrorInterno()
@@ -120,10 +121,47 @@ func (e *Encurtador) BuscarPorAlias(alias string) (UrlEncurtada, *ErrorReturn) {
 		return UrlEncurtada{}, NewErrorInterno()
 	}
 
-	if aliasRetorno!=""{
-		return  NewUrlEncurtada(aliasRetorno,urlLonga,tempoOperacao), nil
+	if aliasRetorno != "" {
+		err := e.atualizarNumeroDeAcessos(alias, acessos)
+		if err != nil {
+			log.Printf("dbWrite na atualização . %v", err)
+			return UrlEncurtada{}, NewErrorInterno()
+		}
+
+		return NewUrlEncurtada(aliasRetorno, urlLonga, tempoOperacao, 0), nil
 	}
-	return UrlEncurtada{}, NewErrorAliasNaoEncontrado(alias)
+	return UrlEncurtada{}, NewErrorAliasNaoEncontrado()
+}
+
+func (e *Encurtador) BuscarDezUrlsMaisAcessadas() ([]UrlEncurtada, *ErrorReturn) {
+	var urls []UrlEncurtada
+	var rows *sql.Rows
+	rows, err := e.readDB.Query(`SELECT url_longa,alias,tempo_operacao,acessos FROM url_encurtada order by acessos desc limit 10   `)
+	if err != nil {
+		log.Printf("dbRead error ao executar a query. %v", err)
+		return urls, NewErrorInterno()
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		var urlLonga string
+		var aliasRetorno string
+		var tempoOperacao string
+		var acessos int
+		err = rows.Scan(&urlLonga, &aliasRetorno, &tempoOperacao, &acessos)
+		if err != nil {
+			log.Printf("dbRead error ao ler as linhas retornadas da consulta. %v", err)
+			return urls, NewErrorInterno()
+		}
+		urls = append(urls, NewUrlEncurtada(aliasRetorno, urlLonga, tempoOperacao, acessos))
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Printf("dbRead error na interacao da linha. %v", err)
+		return urls, NewErrorInterno()
+	}
+
+	return urls, nil
 }
 
 func (e *Encurtador) nextSequence() (sequence uint64, err error) {
@@ -154,23 +192,42 @@ func (e *Encurtador) nextSequence() (sequence uint64, err error) {
 	}
 }
 
-func (e *Encurtador) criarUrlEncurtada(alias string, url string,inicio time.Time) ( string, error) {
+func (e *Encurtador) criarUrlEncurtada(alias string, url string, inicio time.Time) (string, error) {
 	var stmt *sql.Stmt
 	stmt, err := e.writeDB.Prepare(`INSERT INTO url_encurtada(url_longa, alias,tempo_operacao) VALUES(?, ?, ?)`)
 	if err != nil {
 		log.Printf("Error na sequence. %v", err)
-		return "",err
+		return "", err
 	}
 	defer stmt.Close()
 	fim := time.Since(inicio)
-	fimMs:= fim.Nanoseconds()/1000000
+	fimMs := fim.Nanoseconds() / 1000000
 	tempoOperacao := strconv.Itoa(int(fimMs))
-	tempoOperacao+="ms"
-	_, err = stmt.Exec(url, alias,tempoOperacao)
+	tempoOperacao += "ms"
+	_, err = stmt.Exec(url, alias, tempoOperacao)
 	if err != nil {
 		log.Printf("dbWrite error ao inserir. %v", err)
-		return "" ,errors.New("dbWrite error ao inserir")
+		return "", errors.New("dbWrite error ao inserir")
 	}
 
-	return tempoOperacao,nil
+	return tempoOperacao, nil
+}
+
+func (e *Encurtador) atualizarNumeroDeAcessos(alias string, acessos int) error {
+	var stmt *sql.Stmt
+	stmt, err := e.writeDB.Prepare(`UPDATE url_encurtada set acessos=? where alias = ?`)
+	if err != nil {
+		log.Printf("Error na Query %v", err)
+		return err
+	}
+
+	defer stmt.Close()
+	acessos++
+	_, err = stmt.Exec(acessos, alias)
+	if err != nil {
+		log.Printf("dbWrite error ao atualizar. %v", err)
+		return errors.New("dbWrite error ao inserir")
+	}
+
+	return nil
 }

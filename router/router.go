@@ -12,7 +12,9 @@ func IniciarRotas() {
 	encurtador := models.NewEncurtador()
 	encurtadorHandler := handlers.NewEncurtador(encurtador)
 	router := mux.NewRouter()
-	router.HandleFunc("/criar", encurtadorHandler.EncurtarURL).Methods("PUT")
-	router.HandleFunc("/url/{alias}", encurtadorHandler.BuscarURL).Methods("GET")
+	router.HandleFunc("/criar", encurtadorHandler.EncurtarURL).Methods(http.MethodPut)
+	router.HandleFunc("/url/{alias}", encurtadorHandler.BuscarURL).Methods(http.MethodGet)
+	router.HandleFunc("/list", encurtadorHandler.ListarUrlMaisAcessadas).Methods(http.MethodGet)
+
 	http.Handle("/", router)
 }

@@ -16,7 +16,7 @@ type service struct {
 
 type db struct {
 	MysqlWrite string `toml:"mysqlwrite"`
-	MysqlRead string `toml:"mysqlread"`
+	MysqlRead  string `toml:"mysqlread"`
 }
 type base struct {
 	Alfabeto string `toml:"alfabeto"`

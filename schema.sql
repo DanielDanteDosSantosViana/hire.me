@@ -13,6 +13,7 @@ CREATE TABLE `url_encurtada` (
   `url_longa` varchar(10240) NOT NULL,
   `alias` varchar(11) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `tempo_operacao` varchar(11) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `acessos` int(10) NOT NULL DEFAULT 0,
  PRIMARY KEY (`id`),
   UNIQUE KEY `alias` (`alias`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

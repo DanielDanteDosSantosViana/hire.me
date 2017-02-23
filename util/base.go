@@ -10,7 +10,7 @@ func InteiroParaString(sequence uint64) (urlEncurtada string) {
 
 	/* Special case */
 	if sequence == 0 {
-		return string(config.Conf.Base.Alfabeto)
+		return string(config.Conf.Base.Alfabeto[sequence])
 	}
 
 	/* Map */
