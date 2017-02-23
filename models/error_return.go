@@ -34,8 +34,8 @@ func NewErrorAliasNaoEncontrado() *ErrorReturn {
 	return &ErrorReturn{"", "", "002", ErrorAliasNaoEncontrado.Error()}
 }
 func NewErrorUrlInvalida(url string) *ErrorReturn {
-	return &ErrorReturn{url, "", "002", ErrorUrlInvalida.Error()}
+	return &ErrorReturn{url, "", "004", ErrorUrlInvalida.Error()}
 }
 func NewErrorToRedirect(url string) *ErrorReturn {
-	return &ErrorReturn{url, "", "002", ErrorRedirectURL.Error()}
+	return &ErrorReturn{url, "", "005", ErrorRedirectURL.Error()}
 }

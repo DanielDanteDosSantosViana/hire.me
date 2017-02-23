@@ -88,7 +88,7 @@ func (e *Encurtador) BuscarURL(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (e *Encurtador) ListarUrlMaisAcessadas(w http.ResponseWriter, r *http.Request) {
+func (e *Encurtador) ListarUrlsMaisAcessadas(w http.ResponseWriter, r *http.Request) {
 	urls, err := e.encurtador.BuscarDezUrlsMaisAcessadas()
 	if err != nil {
 		errorJ, _ := json.Marshal(err)

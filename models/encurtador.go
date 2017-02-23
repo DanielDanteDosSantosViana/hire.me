@@ -128,7 +128,7 @@ func (e *Encurtador) BuscarPorAlias(alias string) (UrlEncurtada, *ErrorReturn) {
 			return UrlEncurtada{}, NewErrorInterno()
 		}
 
-		return NewUrlEncurtada(aliasRetorno, urlLonga, tempoOperacao, 0), nil
+		return NewUrlEncurtada(aliasRetorno, urlLonga, tempoOperacao, acessos), nil
 	}
 	return UrlEncurtada{}, NewErrorAliasNaoEncontrado()
 }
@@ -231,3 +231,16 @@ func (e *Encurtador) atualizarNumeroDeAcessos(alias string, acessos int) error {
 
 	return nil
 }
+
+func (e *Encurtador) close() {
+	if e.writeDB != nil {
+		e.writeDB.Close()
+		e.writeDB = nil
+	}
+
+	if e.readDB != nil {
+		e.readDB.Close()
+		e.readDB = nil
+	}
+}
+

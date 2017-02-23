@@ -14,7 +14,7 @@ func IniciarRotas() {
 	router := mux.NewRouter()
 	router.HandleFunc("/criar", encurtadorHandler.EncurtarURL).Methods(http.MethodPut)
 	router.HandleFunc("/url/{alias}", encurtadorHandler.BuscarURL).Methods(http.MethodGet)
-	router.HandleFunc("/list", encurtadorHandler.ListarUrlMaisAcessadas).Methods(http.MethodGet)
+	router.HandleFunc("/list", encurtadorHandler.ListarUrlsMaisAcessadas).Methods(http.MethodGet)
 
 	http.Handle("/", router)
 }
