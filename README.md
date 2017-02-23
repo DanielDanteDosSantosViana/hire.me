@@ -52,12 +52,25 @@ Existem dois acessos de banco, mysqlread(onde colocaria o usuário com apenas pe
 mysqlwrite(usuário com permissão de escrita). A ideia inicial era deixar o banco de leitura com Redis, para cachear as consultas.
 
 #Banco
+```
 MySQL
+
+Obs: 
+  - o schema do banco está no arquivo schema.sql
+  
+  - para a geração do alias de encurtamento , foi utilizado a seguinte ideia obtida no
+    stackoverflow : http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener
+  
+  - para a geração de um inteiro único para cada alias :
+   http://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/
+
+```
+
 
     
 # Teste
 
-Para rodar todos os teste é ncessário o seguinte  comando :
+Para rodar todos os teste é necessário o seguinte  comando :
 ```
     na raiz do projeto:
 
