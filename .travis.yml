@@ -12,6 +12,6 @@ services:
 script: go test -short -v ./...
 
 before_script:
-    - "./travis-setup -h127.0.0.1 -uroot"
+    - "./travis-setup -h127.0.0.1 -utravis"
 
 sudo: required
