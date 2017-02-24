@@ -5,11 +5,11 @@
 ```
    go get ./...
 ```
-# Instalação 
+# Instalação
 ```
    na raiz do projeto:
 
-   go install 
+   go install
 ```
 
 # Modo de usar
@@ -20,7 +20,7 @@ Para utilizar o encurtador basta rodar em linha de comando:
 
 ```
 
-Existe um arquivo de configuração default utilizado no projeto chamado 
+Existe um arquivo de configuração default utilizado no projeto chamado
 conf.toml, porém pode se passar em linha de comando o caminho para outro
 arquivo de configuração:
 ```
@@ -55,19 +55,19 @@ mysqlwrite(usuário com permissão de escrita). A ideia inicial era deixar o ban
 ```
 MySQL
 
-Obs: 
+Obs:
   - o schema do banco está no arquivo schema.sql
-  
+
   - para a geração do alias de encurtamento , foi utilizado a seguinte ideia obtida no
     stackoverflow : http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener
-  
+
   - para a geração de um inteiro único para cada alias :
    http://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/
 
 ```
 
 
-    
+
 # Teste
 
 Para rodar todos os teste é necessário o seguinte  comando :
@@ -88,3 +88,6 @@ http://localhost:8080
 
 ```
 
+Conforme a imagem :
+
+![](test.png)  
