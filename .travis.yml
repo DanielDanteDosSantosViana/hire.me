@@ -1,16 +1,19 @@
 language: go
 
 go:
-  - 1.2
-  - 1.3
-  - 1.4
-  - 1.5
   - 1.6
   - tip
 
 install:
   - go get -t ./...
 
+services:
+  - mysql
+
 script: go test -short -v ./...
 
-sudo: false
+before_install:
+  - mysql -e 'DROP TABLE IF EXISTS `sequence`; CREATE TABLE `sequence` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,`stub` varchar(1) NOT NULL,PRIMARY KEY (`id`),UNIQUE KEY `stub` (`stub`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;'
+  - mysql -e 'DROP TABLE IF EXISTS `url_encurtada`;CREATE TABLE `url_encurtada` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,`url_longa` varchar(10240) NOT NULL,`alias` varchar(11) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,`tempo_operacao` varchar(11) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,`acessos` int(10) NOT NULL DEFAULT 0,PRIMARY KEY (`id`),UNIQUE KEY `alias` (`alias`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
+
+sudo: true
