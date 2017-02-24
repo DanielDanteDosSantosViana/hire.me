@@ -1,4 +1,5 @@
 #!/bin/sh -xe
+
 mysql $* <<EOF
 DROP DATABASE IF EXISTS encurtar_url;
 CREATE DATABASE encurtar_url;
