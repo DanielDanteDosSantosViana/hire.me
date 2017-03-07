@@ -201,8 +201,8 @@ func (e *Encurtador) criarUrlEncurtada(alias string, url string, inicio time.Tim
 	}
 	defer stmt.Close()
 	fim := time.Since(inicio)
-	fimMs := fim.Nanoseconds() / 1000000
-	tempoOperacao := strconv.Itoa(int(fimMs))
+	fimMs := float64(fim.Nanoseconds()) / 1000000
+	tempoOperacao := strconv.FormatFloat(fimMs, 'f', 1, 64)
 	tempoOperacao += "ms"
 	_, err = stmt.Exec(url, alias, tempoOperacao)
 	if err != nil {
@@ -243,4 +243,3 @@ func (e *Encurtador) close() {
 		e.readDB = nil
 	}
 }
-

@@ -8,7 +8,7 @@ import (
 
 func TestRetornoErrorUrlNaoInformada(t *testing.T) {
 	Convey("Dado uma excecao de URL não informada", t, func() {
-		error := NewErrorUrlNaoInformada() 
+		error := NewErrorUrlNaoInformada()
 
 		Convey("Quando recupero a descrição do Error", func() {
 			descricao := error.Descricao
@@ -22,7 +22,7 @@ func TestRetornoErrorUrlNaoInformada(t *testing.T) {
 
 func TestRetornoErrorAliasExiste(t *testing.T) {
 	Convey("Dado uma excecao de alias existente", t, func() {
-		error := NewErrorAliasExiste() 
+		error := NewErrorAliasExiste()
 
 		Convey("Quando recupero a descrição do Error", func() {
 			descricao := error.Descricao
@@ -36,7 +36,7 @@ func TestRetornoErrorAliasExiste(t *testing.T) {
 
 func TestRetornoErrorInterno(t *testing.T) {
 	Convey("Dado uma excecao de error interno", t, func() {
-		error := NewErrorInterno() 
+		error := NewErrorInterno()
 
 		Convey("Quando recupero a descrição do Error", func() {
 			descricao := error.Descricao
@@ -50,7 +50,7 @@ func TestRetornoErrorInterno(t *testing.T) {
 
 func TestRetornoErrorAliasNaoEncontrado(t *testing.T) {
 	Convey("Dado uma excecao de alias nao encontrado", t, func() {
-		error := NewErrorAliasNaoEncontrado() 
+		error := NewErrorAliasNaoEncontrado()
 
 		Convey("Quando recupero a descrição do Error", func() {
 			descricao := error.Descricao
@@ -64,7 +64,7 @@ func TestRetornoErrorAliasNaoEncontrado(t *testing.T) {
 
 func TestRetornoErrorUrlInvalida(t *testing.T) {
 	Convey("Dado uma excecao de url inválida", t, func() {
-		error := NewErrorUrlInvalida("www.google.com") 
+		error := NewErrorUrlInvalida("www.google.com")
 
 		Convey("Quando recupero a descrição do Error", func() {
 			descricao := error.Descricao
@@ -78,7 +78,7 @@ func TestRetornoErrorUrlInvalida(t *testing.T) {
 
 func TestRetornoErrorRedirectURL(t *testing.T) {
 	Convey("Dado uma excecao de redirect url", t, func() {
-		error := NewErrorToRedirect("www.google.com") 
+		error := NewErrorToRedirect("www.google.com")
 
 		Convey("Quando recupero a descrição do Error", func() {
 			descricao := error.Descricao
@@ -89,4 +89,3 @@ func TestRetornoErrorRedirectURL(t *testing.T) {
 		})
 	})
 }
-

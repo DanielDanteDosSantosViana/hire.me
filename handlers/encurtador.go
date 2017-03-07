@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/DanielDanteDosSantosViana/hire.me/models"
@@ -26,7 +25,6 @@ func (e *Encurtador) EncurtarURL(w http.ResponseWriter, r *http.Request) {
 		util.ResponseBadRequest(w, errorJ)
 		return
 	}
-	log.Println(util.IsUrl(url))
 	if !util.IsUrl(url) {
 		errorJ, _ := json.Marshal(models.NewErrorUrlInvalida(url))
 		util.ResponseInternalError(w, errorJ)
